@@ -41,6 +41,32 @@ chrome.alarms.get('sync').then((a) => a || chrome.alarms.create('sync', { period
 chrome.alarms.onAlarm.addListener((alarm) => alarm.name === 'sync' && sync());
 chrome.runtime.onStartup.addListener(sync);
 
+// Default: content script only on the major music sites in the manifest. If the user grants the
+// optional <all_urls> permission from the popup, register the same script for every other site.
+const ALL_SITES = { origins: ['<all_urls>'] };
+async function syncAllSites() {
+  try {
+    const granted = await chrome.permissions.contains(ALL_SITES);
+    const registered = await chrome.scripting.getRegisteredContentScripts({ ids: ['all-sites'] });
+    if (granted && !registered.length) {
+      await chrome.scripting.registerContentScripts([{
+        id: 'all-sites',
+        matches: ['<all_urls>'],
+        excludeMatches: chrome.runtime.getManifest().content_scripts[0].matches,
+        js: ['matcher.js', 'content.js'],
+        runAt: 'document_idle',
+      }]);
+    } else if (!granted && registered.length) {
+      await chrome.scripting.unregisterContentScripts({ ids: ['all-sites'] });
+    }
+  } catch (err) {
+    console.warn('[Sentinel] all-sites registration:', err);
+  }
+}
+syncAllSites();
+chrome.permissions.onAdded.addListener(syncAllSites);
+chrome.permissions.onRemoved.addListener(syncAllSites);
+
 chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   if (msg.type === 'match' && sender.tab) {
     chrome.action.setBadgeText({ text: msg.on ? '!' : '', tabId: sender.tab.id });

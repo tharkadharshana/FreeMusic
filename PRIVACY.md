@@ -8,7 +8,8 @@ what the extension does with data. In short: **it collects nothing about you.**
 ## What the extension reads
 
 To detect whether a song from the ACPOSL public catalogue is playing, the extension reads, **locally in your
-browser**, the following on pages where audio or video is playing:
+browser**, the following on pages where audio or video is playing. By default this happens only on YouTube, YouTube Music, Spotify Web, SoundCloud, Facebook, Instagram and TikTok;
+on other sites only if you click "Enable on all sites" in the popup (you can turn this off again at any time):
 
 - the page title;
 - media information the page publishes through the browser's Media Session API (track title and artist);
