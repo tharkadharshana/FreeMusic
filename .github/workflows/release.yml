@@ -28,6 +28,9 @@ jobs:
           jq '.background = {scripts: ["background.js"]}' extension/manifest.json > firefox/manifest.json
           (cd firefox && zip -r ../audio-copyright-sentinel-firefox.zip .)
 
+      - name: Mozilla addons-linter
+        run: npx -y addons-linter --warnings-as-errors firefox
+
       - uses: actions/upload-artifact@v4
         with:
           name: extension-zips
