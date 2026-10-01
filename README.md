@@ -187,7 +187,9 @@ The first listing in each store is created **by hand**. After that, the CI workf
 
 **Get the zips:** download the `extension-zips` artifact from any GitHub Actions run on `main`, or run:
 ```bash
-gh run download --repo tharkadharshana/FreeMusic -n extension-zips
+# Always pin the latest run on main: without a run ID, gh may pick an older build.
+RUN=$(gh run list --repo tharkadharshana/FreeMusic --branch main --limit 1 --json databaseId -q '.[0].databaseId')
+gh run download "$RUN" --repo tharkadharshana/FreeMusic -n extension-zips -D extension-zips
 ```
 
 **Ready-made listing material** is in [`store/`](store/):
@@ -312,6 +314,7 @@ CI runs the same checks on every pull request and every push to `main`.
 | No card on a site | Check the popup switch is on, media is actually playing, and the song or artist is in the catalogue (use the popup search) |
 | CI: "Tag vX does not match manifest version" | Bump `"version"` in `extension/manifest.json` to match the tag. Delete the wrong tag with `git push origin :vX` |
 | CI: Chrome upload fails, item in review | Wait for the current review to finish, then re-run the job |
+| Store shows an old version or is missing a permission field | You uploaded an older zip. Download from the **latest** `main` run (command above) and check `"version"` in the zip's `manifest.json` |
 | CI: Chrome `invalid_grant` | Refresh token expired. Publish the OAuth consent screen and generate a new token |
 
 ## Privacy
