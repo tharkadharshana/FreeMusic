@@ -20,6 +20,19 @@ jobs:
       - run: npm run lint
       - run: npm run build
 
+      # Chrome takes background.service_worker; Firefox MV3 needs background.scripts.
+      - name: Package Chrome and Firefox zips
+        run: |
+          (cd extension && zip -r ../audio-copyright-sentinel.zip .)
+          cp -r extension firefox
+          jq '.background = {scripts: ["background.js"]}' extension/manifest.json > firefox/manifest.json
+          (cd firefox && zip -r ../audio-copyright-sentinel-firefox.zip .)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: extension-zips
+          path: audio-copyright-sentinel*.zip
+
   publish:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: check
@@ -32,13 +45,9 @@ jobs:
           VERSION=$(jq -r .version extension/manifest.json)
           [ "v$VERSION" = "$GITHUB_REF_NAME" ] || { echo "Tag $GITHUB_REF_NAME does not match manifest version $VERSION"; exit 1; }
 
-      - name: Package
-        run: cd extension && zip -r ../audio-copyright-sentinel.zip .
-
-      - uses: actions/upload-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
-          name: audio-copyright-sentinel
-          path: audio-copyright-sentinel.zip
+          name: extension-zips
 
       - name: Chrome Web Store
         uses: mnao305/chrome-extension-upload@v7.0.0
@@ -54,6 +63,6 @@ jobs:
         uses: wdzeng/firefox-addon@v1.2.1
         with:
           addon-guid: audio-sentinel@copyright-sentinel.local
-          xpi-path: audio-copyright-sentinel.zip
+          xpi-path: audio-copyright-sentinel-firefox.zip
           jwt-issuer: ${{ secrets.FIREFOX_JWT_ISSUER }}
           jwt-secret: ${{ secrets.FIREFOX_JWT_SECRET }}

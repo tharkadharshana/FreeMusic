@@ -5,8 +5,7 @@
   "description": "Warns when a song from the ACPOSL public catalogue plays in your browser.",
   "permissions": ["storage", "alarms"],
   "background": {
-    "service_worker": "background.js",
-    "scripts": ["background.js"]
+    "service_worker": "background.js"
   },
   "action": {
     "default_popup": "popup.html",

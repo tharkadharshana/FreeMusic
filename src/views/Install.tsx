@@ -16,7 +16,7 @@ const SECRETS = [
 const SETUP = [
   <>Make the <a className="text-primary underline" href={REPO}>FreeMusic repo</a> public, so the update URL works for everyone.</>,
   <>Register a Chrome Web Store developer account (one-time US$5) and a free Firefox Add-ons account.</>,
-  <>Zip the <code className="font-mono text-sm">extension/</code> folder and upload it by hand once to each store to create the listings.</>,
+  <>Download the <code className="font-mono text-sm">extension-zips</code> artifact from any GitHub Actions run and upload it by hand once to each store (the <code className="font-mono text-sm">-firefox</code> zip to Firefox) to create the listings.</>,
   <>Add the secrets below under GitHub → Settings → Secrets and variables → Actions.</>,
 ];
 
@@ -57,8 +57,10 @@ export function Install() {
           <li>Play a catalogue song on YouTube. The caution card appears bottom-right within 2 seconds.</li>
         </ol>
         <p className="mt-3 text-sm text-muted">
-          Firefox: open <code className="font-mono">about:debugging</code> → This Firefox → Load Temporary Add-on → pick{' '}
-          <code className="font-mono">extension/manifest.json</code>, then allow access to all websites in the add-on's permissions.
+          Firefox: download <code className="font-mono">audio-copyright-sentinel-firefox.zip</code> from the latest{' '}
+          <a className="text-primary underline" href={`${REPO}/actions`}>GitHub Actions run</a> (artifact{' '}
+          <code className="font-mono">extension-zips</code>), then <code className="font-mono">about:debugging</code> → This Firefox →
+          Load Temporary Add-on → pick that zip, and allow access to all websites in the add-on's permissions.
         </p>
         <a href={`${REPO}/archive/refs/heads/main.zip`} className={`${secondaryButton} mt-4`}>
           <ExternalLink className="h-4 w-4" aria-hidden /> Download repo (.zip)

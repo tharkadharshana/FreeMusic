@@ -34,7 +34,9 @@ npm test        # matcher self-check
 npm run lint && npm run build
 ```
 
-Try the extension: `chrome://extensions` → Developer mode → **Load unpacked** → pick `extension/`.
+Try the extension in Chrome/Edge/Brave: `chrome://extensions` → Developer mode → **Load unpacked** → pick `extension/`.
+Firefox needs `background.scripts` instead of `service_worker`: use `audio-copyright-sentinel-firefox.zip` from the
+`extension-zips` artifact of any GitHub Actions run (`about:debugging` → Load Temporary Add-on).
 
 ## Update the song list (no store review)
 
@@ -59,7 +61,8 @@ uploads it to the Chrome Web Store and Firefox Add-ons. Stores still review each
 
 1. Make the repo public.
 2. Create a Chrome Web Store developer account (US$5) and a Firefox Add-ons account.
-3. Upload a zip of `extension/` by hand once to each store to create the listings.
+3. Download the `extension-zips` artifact from any Actions run and upload by hand once to each store
+   (`audio-copyright-sentinel-firefox.zip` to Firefox) to create the listings.
 4. Add these repository secrets (Settings → Secrets and variables → Actions):
 
 | Secret | Where |
