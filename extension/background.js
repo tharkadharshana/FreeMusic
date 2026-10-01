@@ -33,11 +33,13 @@ chrome.runtime.onInstalled.addListener(async () => {
   const bundled = await load(chrome.runtime.getURL('rules.json'));
   if (!rules || bundled.version > rules.version) await chrome.storage.local.set({ rules: bundled });
   if (enabled === undefined) await chrome.storage.local.set({ enabled: true });
-  chrome.alarms.create('sync', { periodInMinutes: 360 });
   sync();
 });
 
+// Alarms can be cleared on browser restart (always in Firefox): re-create on every worker start.
+chrome.alarms.get('sync').then((a) => a || chrome.alarms.create('sync', { periodInMinutes: 360 }));
 chrome.alarms.onAlarm.addListener((alarm) => alarm.name === 'sync' && sync());
+chrome.runtime.onStartup.addListener(sync);
 
 chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   if (msg.type === 'match' && sender.tab) {
