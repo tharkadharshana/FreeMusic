@@ -9,3 +9,7 @@ coverage/
 
 # Raw ACPOSL exports stay local; only extension/rules.json is published
 docs/ACPOSL/
+
+# Downloaded/built extension packages (CI artifacts), never commit
+*.zip
+extension-zips/
