@@ -73,5 +73,6 @@ affiliated with ACPOSL.
 | `screenshot-1-caution.png` | 1280×800 | Caution card on a playing song |
 | `screenshot-2-search.png` | 1280×800 | Popup: search the catalogue |
 | `screenshot-3-dark.png` | 1280×800 | Dark mode, artist match |
-| `promo-small-440x280.png` | 440×280 | Chrome small promo tile |
-| `../extension/icons/128.png` | 128×128 | Store icon |
+| `promo-small-440x280.png` | 440×280 | Chrome small promo tile (24-bit, no alpha) |
+| `marquee-1400x560.png` | 1400×560 | Chrome marquee promo tile (24-bit, no alpha) |
+| `store-icon-128.png` | 128×128 | Chrome store icon: 96×96 artwork + 16 px transparent padding, per Chrome image guidelines |
