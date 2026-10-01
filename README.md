@@ -71,6 +71,9 @@ Inside the extension:
 | `scripts/build-rules.mjs` | Command-line catalogue (CSV/XLSX) → `extension/rules.json` |
 | `scripts/test-matcher.mjs` | Matcher self-check (`npm test`) |
 | `.github/workflows/release.yml` | CI: test, lint, build, package zips; publish to stores on `v*` tags |
+| `store/` | Store listing text, screenshots, promo tile |
+| `PRIVACY.md` | Privacy policy (URL used in both store listings) |
+| `LICENSE` | Proprietary license, all rights reserved |
 | `docs/ACPOSL/` | Raw catalogue exports, **local only** (git-ignored) |
 
 ## Matching rule
@@ -185,11 +188,13 @@ The first listing in each store is created **by hand**. After that, the CI workf
 gh run download --repo tharkadharshana/FreeMusic -n extension-zips
 ```
 
-**Before the first Firefox submission**, add Firefox's data-collection declaration to `extension/manifest.json`,
-inside `browser_specific_settings.gecko`:
-```json
-"data_collection_permissions": { "required": ["none"] }
-```
+**Ready-made listing material** is in [`store/`](store/):
+- [`store/LISTING.md`](store/LISTING.md): name, summary, description, privacy-tab answers and Firefox reviewer notes, ready to paste.
+- `store/screenshot-*.png` (1280×800) and `store/promo-small-440x280.png`, captured from the real extension.
+- Privacy policy URL: https://github.com/tharkadharshana/FreeMusic/blob/main/PRIVACY.md
+
+The manifest already declares Firefox's required `data_collection_permissions: none`, and passes Mozilla's
+`addons-linter` with 0 errors and 0 warnings.
 
 ### Chrome Web Store
 
@@ -205,7 +210,8 @@ inside `browser_specific_settings.gecko`:
    - **Content script on all sites:** reads the page title and media metadata locally to detect a catalogue
      song.
    - **Remote code:** No. `rules.json` is data (titles and names), not code.
-   - **Data usage:** collects no user data. Add the privacy policy URL.
+   - **Data usage:** collects no user data. Privacy policy URL:
+     `https://github.com/tharkadharshana/FreeMusic/blob/main/PRIVACY.md`. All answers are in `store/LISTING.md`.
 5. Click **Submit for review**. Usually 1–3 days. Running on all sites can mean a longer manual review, up to
    about a week.
 6. Note the 32-character **Item ID** (in the item's URL) and your **Publisher ID** (Account page) for CI.
@@ -305,6 +311,8 @@ CI runs the same checks on every pull request and every push to `main`.
 | CI: Chrome `invalid_grant` | Refresh token expired. Publish the OAuth consent screen and generate a new token |
 
 ## Privacy
+
+Full policy: [PRIVACY.md](PRIVACY.md).
 
 - The extension reads page titles and media metadata **locally** to detect songs. Nothing about the user's
   browsing is collected, stored remotely, or sent anywhere.

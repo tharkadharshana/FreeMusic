@@ -52,7 +52,8 @@
     hide();
     hud = document.createElement('div');
     const root = hud.attachShadow({ mode: 'closed' });
-    root.innerHTML = TEMPLATE; // static markup only; dynamic text goes in via textContent below
+    const doc = new DOMParser().parseFromString(TEMPLATE, 'text/html'); // static markup; dynamic text via textContent below
+    root.append(...doc.head.childNodes, ...doc.body.childNodes);
     root.querySelector('.name').textContent = match.title || match.artists[0];
     root.querySelector('.credit').textContent = match.kind === 'song'
       ? (match.artists.length ? 'Credited: ' + match.artists.join(', ') : 'Added by you')
