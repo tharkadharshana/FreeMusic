@@ -47,7 +47,10 @@ Inside the extension:
 - **`content.js`** runs on the major music sites listed in `manifest.json` (YouTube, YouTube Music, Spotify Web, SoundCloud, Facebook, Instagram and TikTok).
   If the user clicks **Enable on all sites**, `background.js` asks for the optional `<all_urls>` permission
   and registers the same script for every other site (`chrome.scripting`). Every 2 seconds, if any audio or video is playing, it reads the
-  MediaSession title and artist, the page title, and the YouTube channel name. It runs the matcher only when
+  MediaSession title and artist, the page title, and the YouTube channel name. It also reads the song labels that
+  the platforms print from their own audio recognition: the YouTube description and its "Music" section, and the
+  on-screen sound link on YouTube Shorts, TikTok, Instagram and Facebook. This catches re-uploads with misleading
+  titles. It runs the matcher only when
   that text changes, and shows the caution card on a match.
 - **`background.js`** loads the bundled `rules.json` on install. It re-downloads the list from GitHub every
   6 hours and on browser start, and checks the file's shape before saving it. It also sets the red **!**
@@ -212,7 +215,7 @@ The manifest already declares Firefox's required `data_collection_permissions: n
    - **`storage`:** saves the song list, settings and the user's own additions.
    - **`alarms`:** refreshes the song list from GitHub every 6 hours.
    - **`scripting`:** registers the content script on every site only after the user opts in.
-   - **Host permissions (the listed music sites, plus optional all sites):** reads the page title and media metadata locally to detect a catalogue
+   - **Host permissions (the listed music sites, plus optional all sites):** reads the page title, media metadata and on-page song labels locally to detect a catalogue
      song.
    - **Remote code:** No. `rules.json` is data (titles and names), not code.
    - **Data usage:** collects no user data. Privacy policy URL:
@@ -286,6 +289,8 @@ CI runs the same checks on every pull request and every push to `main`.
 |---|---|
 | Play a catalogue song with a 3+ word title (e.g. "Aye Numba Na Kiya") | Caution card within 2 s, red **!** badge |
 | Video whose title or channel has a 2+ word ACPOSL artist name | Card shows "ACPOSL member artist" |
+| YouTube video with a neutral title whose description "Music" section lists a catalogue song | Caution card within 2 s |
+| TikTok or Reels post whose sound label is a catalogue song | Caution card within 2 s |
 | Unrelated video with "Amma" in the title | No card |
 | Catalogue song, paused | No card |
 | **Mute** / **Dismiss** buttons | Mutes the media / hides the card for that video |

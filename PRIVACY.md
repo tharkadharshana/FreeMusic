@@ -13,7 +13,9 @@ on other sites only if you click "Enable on all sites" in the popup (you can tur
 
 - the page title;
 - media information the page publishes through the browser's Media Session API (track title and artist);
-- on YouTube, the channel name shown on the page.
+- on YouTube, the channel name and the video description shown on the page, including the "Music" section that
+  names the song used in the video;
+- on YouTube Shorts, TikTok, Instagram and Facebook, the sound or audio label shown on the post that is on screen.
 
 This information is compared against the song list stored inside the extension. It is never stored, logged,
 or sent anywhere.
