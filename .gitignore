@@ -6,3 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Raw ACPOSL exports stay local; only extension/rules.json is published
+docs/ACPOSL/

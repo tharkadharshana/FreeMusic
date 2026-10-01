@@ -1,1 +1,57 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Fira Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Fira Code", ui-monospace, SFMono-Regular, monospace;
+
+  --color-bg: #f8fafc;
+  --color-card: #ffffff;
+  --color-fg: #0f172a;
+  --color-muted: #475569;
+  --color-line: #e2e8f0;
+  --color-primary: #1e3a8a;
+  --color-primary-fg: #ffffff;
+  --color-primary-soft: #eff6ff;
+  --color-warn: #b45309;
+  --color-warn-soft: #fffbeb;
+  --color-danger: #dc2626;
+  --color-danger-soft: #fef2f2;
+  --color-ok: #15803d;
+  --color-ok-soft: #f0fdf4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0b1120;
+    --color-card: #111827;
+    --color-fg: #f8fafc;
+    --color-muted: #cbd5e1;
+    --color-line: #1f2937;
+    --color-primary: #93c5fd;
+    --color-primary-fg: #0b1120;
+    --color-primary-soft: #172554;
+    --color-warn: #fbbf24;
+    --color-warn-soft: #422006;
+    --color-danger: #f87171;
+    --color-danger-soft: #450a0a;
+    --color-ok: #4ade80;
+    --color-ok-soft: #052e16;
+    color-scheme: dark;
+  }
+}
+
+body {
+  @apply bg-bg text-fg font-sans antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
