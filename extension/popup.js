@@ -69,6 +69,22 @@ async function refresh() {
   renderCustom();
 }
 
+const ALL_SITES = { origins: ['<all_urls>'] };
+async function renderSites() {
+  const all = await chrome.permissions.contains(ALL_SITES);
+  $('sites-meta').textContent = all
+    ? 'Warnings run on every site. Reload tabs that were already open.'
+    : 'Warnings run on YouTube, YouTube Music, Spotify, SoundCloud, Facebook, Instagram and TikTok.';
+  $('all-sites').textContent = all ? 'Only major music sites' : 'Enable on all sites';
+}
+$('all-sites').onclick = async () => {
+  // Must run inside the click handler: browsers only show the permission prompt on a user gesture.
+  if (await chrome.permissions.contains(ALL_SITES)) await chrome.permissions.remove(ALL_SITES);
+  else await chrome.permissions.request(ALL_SITES);
+  renderSites();
+};
+renderSites();
+
 $('enabled').onchange = (e) => store.set({ enabled: e.target.checked });
 $('q').oninput = renderSearch;
 $('sync').onclick = async () => {

@@ -1,8 +1,8 @@
 # Audio Copyright Sentinel
 
 Browser extension for Chrome, Edge, Brave and Firefox. It shows a caution card when a song from the
-**ACPOSL public catalogue** plays in a browser tab: YouTube, Spotify Web, SoundCloud, or any page with an
-`<audio>`/`<video>` player. A companion web app checks titles, updates the catalogue, and explains releases.
+**ACPOSL public catalogue** plays in a browser tab. It runs on YouTube, YouTube Music, Spotify Web, SoundCloud, Facebook, Instagram and TikTok out of the box, and on every
+site once the user clicks **Enable on all sites** in the popup. A companion web app checks titles, updates the catalogue, and explains releases.
 
 > **Disclaimer.** The catalogue is a public-source discovery list, **not** a legal ownership register. A match
 > means "check with ACPOSL before using this song", not "this song is owned by X". No match does **not** mean a
@@ -44,7 +44,9 @@ The song list is served from
 live in `docs/ACPOSL/`, which is git-ignored.
 
 Inside the extension:
-- **`content.js`** runs on every page. Every 2 seconds, if any audio or video is playing, it reads the
+- **`content.js`** runs on the major music sites listed in `manifest.json` (YouTube, YouTube Music, Spotify Web, SoundCloud, Facebook, Instagram and TikTok).
+  If the user clicks **Enable on all sites**, `background.js` asks for the optional `<all_urls>` permission
+  and registers the same script for every other site (`chrome.scripting`). Every 2 seconds, if any audio or video is playing, it reads the
   MediaSession title and artist, the page title, and the YouTube channel name. It runs the matcher only when
   that text changes, and shows the caution card on a match.
 - **`background.js`** loads the bundled `rules.json` on install. It re-downloads the list from GitHub every
@@ -207,13 +209,14 @@ The manifest already declares Firefox's required `data_collection_permissions: n
    - **Single purpose:** "Warns the user when a song from the ACPOSL public catalogue plays in a tab."
    - **`storage`:** saves the song list, settings and the user's own additions.
    - **`alarms`:** refreshes the song list from GitHub every 6 hours.
-   - **Content script on all sites:** reads the page title and media metadata locally to detect a catalogue
+   - **`scripting`:** registers the content script on every site only after the user opts in.
+   - **Host permissions (the listed music sites, plus optional all sites):** reads the page title and media metadata locally to detect a catalogue
      song.
    - **Remote code:** No. `rules.json` is data (titles and names), not code.
    - **Data usage:** collects no user data. Privacy policy URL:
      `https://github.com/tharkadharshana/FreeMusic/blob/main/PRIVACY.md`. All answers are in `store/LISTING.md`.
-5. Click **Submit for review**. Usually 1–3 days. Running on all sites can mean a longer manual review, up to
-   about a week.
+5. Click **Submit for review**. Usually 1–3 days. Since 1.3.0 only the listed music sites are required, and all-sites access is optional and opt-in.
+   This avoids Chrome's "Broad Host Permissions" in-depth review.
 6. Note the 32-character **Item ID** (in the item's URL) and your **Publisher ID** (Account page) for CI.
 
 ### Firefox Add-ons (AMO)
@@ -304,7 +307,8 @@ CI runs the same checks on every pull request and every push to `main`.
 | "Up to date" right after pushing a new list | GitHub's raw cache (up to 5 min per node). Wait 5–10 minutes and check again |
 | New list never arrives | The `version` didn't change. Regenerate with `npm run rules` instead of editing by hand |
 | Chrome: "'background.scripts' requires manifest version of 2 or lower" | Only happens with a manifest that has `background.scripts`. The repo manifest must use only `service_worker`; CI adds `scripts` for Firefox |
-| Firefox: no card appears | Allow access to all websites in `about:addons` → the add-on → Permissions |
+| Firefox: no card appears | Allow the site in `about:addons` → the add-on → Permissions |
+| No card on a site that isn't in the list | Expected by default. Click **Enable on all sites** in the popup, then reload the tab |
 | No card on a site | Check the popup switch is on, media is actually playing, and the song or artist is in the catalogue (use the popup search) |
 | CI: "Tag vX does not match manifest version" | Bump `"version"` in `extension/manifest.json` to match the tag. Delete the wrong tag with `git push origin :vX` |
 | CI: Chrome upload fails, item in review | Wait for the current review to finish, then re-run the job |

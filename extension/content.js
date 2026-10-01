@@ -2,6 +2,8 @@
 // matches the catalogue. One 2s poll covers YouTube SPA navigation, autoplay,
 // MediaSession players (Spotify, SoundCloud) and plain <audio>/<video>.
 (() => {
+  if (globalThis.__sentinelRunning) return; // never run twice in one page
+  globalThis.__sentinelRunning = true;
   const { buildIndex, findMatch } = globalThis.Sentinel;
   const WARNING = '⚠️ COPYRIGHT WARNING: Copyright law may apply! Used with caution.';
 

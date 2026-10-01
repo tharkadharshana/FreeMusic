@@ -21,7 +21,8 @@ Using music in a video, stream, shop or event? Audio Copyright Sentinel tells yo
 appears in the ACPOSL public catalogue, so you can check before you use it.
 
 HOW IT WORKS
-• Play anything: YouTube, Spotify Web, SoundCloud, or any site with an audio or video player.
+• Works on YouTube, YouTube Music, Spotify Web, SoundCloud, Facebook, Instagram and TikTok.
+• Want it everywhere? One click on "Enable on all sites" covers any site with an audio or video player.
 • If the song or artist is in the catalogue, a caution card appears in the corner of the page, and a red
   badge appears on the toolbar icon.
 • Mute the audio or dismiss the card with one click.
@@ -54,7 +55,8 @@ affiliated with ACPOSL.
 | Single purpose | Warns the user when a song from the ACPOSL public catalogue plays in a browser tab. |
 | `storage` justification | Saves the song list, the on/off setting and the user's own added songs locally. |
 | `alarms` justification | Refreshes the song list from the developer's GitHub repository every 6 hours. |
-| Host permission / content script on all sites | The extension must read the page title and media metadata on whatever site is playing audio (YouTube, Spotify, SoundCloud, any player) to detect a catalogue song. This is processed locally and never transmitted. |
+| `scripting` justification | Only used if the user clicks "Enable on all sites" in the popup and grants the optional all-sites permission: it registers the same song-detection content script for sites beyond the default music sites. Never used to inject code into pages without that opt-in. |
+| Host permission justification | The content script runs on a fixed list of music sites (YouTube, YouTube Music, Spotify Web, SoundCloud, Facebook, Instagram and TikTok) because that is where users play songs. On a page where media is playing it reads only the page title, the Media Session track title/artist and, on YouTube, the channel name, and compares them locally with the bundled song list to decide whether to show the caution card. Nothing is stored, logged or transmitted. Access to all other sites is an optional permission that the user can grant from the popup ("Enable on all sites"); it is never requested at install. |
 | Remote code | **No, I am not using remote code.** The downloaded `rules.json` contains only song titles and artist names (data), never executable code. |
 | Data usage | Tick **none** of the data types. Certify all three statements (no selling, no unrelated use, no creditworthiness use). |
 
