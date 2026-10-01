@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Audio Copyright Sentinel",
+  "version": "1.2.0",
+  "description": "Warns when a song from the ACPOSL public catalogue plays in your browser.",
+  "permissions": ["storage", "alarms"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Audio Copyright Sentinel",
+    "default_icon": { "16": "icons/16.png", "48": "icons/48.png", "128": "icons/128.png" }
+  },
+  "icons": { "16": "icons/16.png", "48": "icons/48.png", "128": "icons/128.png" },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["matcher.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "audio-sentinel@copyright-sentinel.local",
+      "strict_min_version": "121.0"
+    }
+  }
+}

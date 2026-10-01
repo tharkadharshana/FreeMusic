@@ -1,6 +1,5 @@
 {
-  "name": "Audio Copyright Sentinel & Extension Studio",
-  "description": "Auto-detect playing audio, match against copyrighted artists and songs watchlist, and trigger real-time caution alerts with ready-to-install browser extension.",
-  "requestFramePermissions": ["microphone"],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "name": "Audio Copyright Sentinel",
+  "description": "Check songs against the ACPOSL public catalogue, update the catalogue, and release the browser extension that warns when a listed song plays.",
+  "requestFramePermissions": []
 }
