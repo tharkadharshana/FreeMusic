@@ -26,10 +26,42 @@
     try { chrome.runtime.sendMessage(msg).catch(() => {}); } catch { /* extension reloaded */ }
   };
 
+  // Song labels the platforms print from their own audio recognition, so a
+  // re-upload with a misleading title is still caught. YouTube's description
+  // (with its "Music" card) is page-wide; sound links (Shorts, TikTok, Reels)
+  // repeat once per feed item, so only the ones on screen count.
+  // ponytail: on-screen filter can pick up a half-visible neighbour post; scope
+  // to the playing <video>'s container if that causes false cautions.
+  const host = location.hostname;
+  const YT = host.endsWith('youtube.com');
+  const DESCRIPTION = 'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-structured-description"], #description-inline-expander';
+  const SOUND_LINKS = YT ? 'a[href^="/source/"]'
+    : host.endsWith('tiktok.com') ? 'a[href*="/music/"]'
+    : /(^|\.)(instagram|facebook)\.com$/.test(host) ? 'a[href*="/audio/"]'
+    : null;
+
+  const onScreen = (el) => {
+    const r = el.getBoundingClientRect();
+    return r.width > 0 && r.bottom > 0 && r.top < innerHeight;
+  };
+  // Text nodes joined with spaces: textContent glues "Song" + "Artist" into one word.
+  function labelText(el) {
+    const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    const parts = [];
+    while (walk.nextNode()) parts.push(walk.currentNode.nodeValue);
+    try { parts.push(decodeURIComponent(el.pathname || '').replace(/[-_/]/g, ' ')); } catch { /* bad % escape */ } // TikTok puts the song in the URL
+    return parts.join(' ');
+  }
+
   function pageText() {
     const meta = navigator.mediaSession?.metadata;
     const channel = document.querySelector('ytd-watch-metadata #channel-name a, ytd-video-owner-renderer #channel-name a');
-    return [meta?.title, meta?.artist, document.title, channel?.textContent].filter(Boolean).join(' | ');
+    const labels = [
+      // The watch page stays in the DOM, hidden, after leaving it, so only read it on /watch.
+      ...(YT && location.pathname === '/watch' ? document.querySelectorAll(DESCRIPTION) : []),
+      ...(SOUND_LINKS ? [...document.querySelectorAll(SOUND_LINKS)].filter(onScreen) : []),
+    ].map(labelText);
+    return [meta?.title, meta?.artist, document.title, channel?.textContent, ...labels].filter(Boolean).join(' | ');
   }
 
   setInterval(() => {
